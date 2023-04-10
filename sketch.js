@@ -2,6 +2,13 @@ let topography;
 let bathymetry;
 let testSection;
 
+let rows = 50;
+let columns = 50;
+let dotRadius = 2;
+let dotSpacing = 25;
+
+let cam;
+
 const maxElevation = 6400;
 const seaLevel = 0;
 const minOceanDepth = -8000;
@@ -16,22 +23,45 @@ function preload() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  positionCamera(cam);
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  testSection = topography.get(0, 0, 100, 100);
-  testSection.loadPixels();
-  //bathymetry.loadPixels();
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  // testSection = topography.get(0, 0, 100, 100);
+  // bathymetry.loadPixels();
+  cam = createCamera();
+  positionCamera(cam);
   
-  
+  noStroke();
+
   console.log("setup");
 }
 
+function positionCamera(cam) {
+  cam.setPosition(0, height * 1.5, (height/2) / tan(PI/6));
+  cam.lookAt(0, 0, 0);
+}
+
+function centerBoard() {
+  let xOffset = -(columns - 1) * dotSpacing / 2;
+  let yOffset = -(rows - 1) * dotSpacing / 2;
+  translate(xOffset, yOffset);
+}
+
 function draw() {
-  
-  background(255);
-  if (testSection.pixels[0] == 0) console.log("black pixel");
+  background(0);
+  centerBoard();
+
+  for (let x = 0; x < columns; x++) {
+    for (let y = 0; y < rows; y++) {
+      push();
+      translate(x * dotSpacing, y * dotSpacing, 0);
+      fill(255);
+      sphere(dotRadius);
+      pop();
+    }
+  }
 }
 
 // returns the red value of a pixel at (x, y) treated as grayscale value
