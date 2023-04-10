@@ -43,7 +43,7 @@ function positionCamera(cam) {
   cam.lookAt(0, 0, 0);
 }
 
-function centerBoard() {
+function centerGrid() {
   let xOffset = -(columns - 1) * dotSpacing / 2;
   let yOffset = -(rows - 1) * dotSpacing / 2;
   translate(xOffset, yOffset);
@@ -51,7 +51,7 @@ function centerBoard() {
 
 function draw() {
   background(0);
-  centerBoard();
+  centerGrid();
 
   for (let x = 0; x < columns; x++) {
     for (let y = 0; y < rows; y++) {
