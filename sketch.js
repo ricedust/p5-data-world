@@ -2,70 +2,90 @@ let topography;
 let bathymetry;
 let testSection;
 
-let rows = 50;
-let columns = 50;
-let dotRadius = 2;
-let dotSpacing = 25;
+let worldPixels;
+
+const rows = 100;
+const columns = 100;
+
+const dotRadius = 2;
+const dotSpacing = 8;
+const dotZScale = 50;
 
 let cam;
 
 const maxElevation = 6400;
 const seaLevel = 0;
-const minOceanDepth = -8000;
+const minSeaDepth = -8000;
 
 function preload() {
-  
-  // bathymetry = loadImage("img/earth-bathymetry.png");
-  
-  topography = loadImage("img/earth-topography.png");
+  topography = loadImage("img/earth-topography-small.png");
+  bathymetry = loadImage("img/earth-bathymetry-small.png");
+
   console.log("preloaded");
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  positionCamera(cam);
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  // testSection = topography.get(0, 0, 100, 100);
-  // bathymetry.loadPixels();
+
   cam = createCamera();
   positionCamera(cam);
-  
-  noStroke();
+
+  topography.loadPixels();
+  bathymetry.loadPixels();
+
+  worldPixels = Array(topography.pixels.length / 4);
+
+  for (let i = 0; i < worldPixels.length; i++) {
+    let seaElevation = map(bathymetry.pixels[i * 4], 0, 255, minSeaDepth, seaLevel);
+    let landElevation = map(topography.pixels[i * 4], 0, 255, seaLevel, maxElevation);
+    worldPixels[i] = seaElevation + landElevation;
+  }
+
+  console.log(worldPixels);
 
   console.log("setup");
+  noStroke();
+  noLoop();
 }
 
 function positionCamera(cam) {
-  cam.setPosition(0, height * 1.5, (height/2) / tan(PI/6));
+  // TODO set z to default
+  cam.setPosition(0, height * 2, (height) / tan(PI/6));
   cam.lookAt(0, 0, 0);
 }
 
 function centerGrid() {
-  let xOffset = -(columns - 1) * dotSpacing / 2;
-  let yOffset = -(rows - 1) * dotSpacing / 2;
+  // let xOffset = -(topography.width/3 - 1) * dotSpacing / 2;
+  // let yOffset = -(topography.height/3 - 1) * dotSpacing / 2;
+  let xOffset = -(topography.width / 4  - 1) * dotSpacing / 2;
+  let yOffset = -(topography.height / 4 - 1) * dotSpacing / 2;
   translate(xOffset, yOffset);
 }
 
 function draw() {
   background(0);
+  positionCamera(cam);
   centerGrid();
 
-  for (let x = 0; x < columns; x++) {
-    for (let y = 0; y < rows; y++) {
+  for (let y = 0; y < topography.height; y+=4) {
+    push();
+    for (let x = 0; x < topography.width; x+=4) {
       push();
-      translate(x * dotSpacing, y * dotSpacing, 0);
-      fill(255);
+      translate(0, 0, getWorldPixel(x, y) / 100);
       sphere(dotRadius);
       pop();
+
+      translate(dotSpacing, 0);
     }
+    pop();
+    translate(0, dotSpacing);
   }
 }
 
-// returns the red value of a pixel at (x, y) treated as grayscale value
-function getGrayscale(img, x, y) {
-  let index = 4 * (y * img.width) + x;
-  return img.pixels[index];
+function getWorldPixel(x, y) {
+  return worldPixels[topography.width * y + x];
 }
