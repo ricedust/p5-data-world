@@ -1,4 +1,4 @@
-# [Data World](ricedust.com/p5-data-world)
+# Data World
 
 ![Data World](https://github.com/ricedust/p5-data-world/assets/62413269/dc91bcc7-f555-4da4-a699-d68082610479)
 
