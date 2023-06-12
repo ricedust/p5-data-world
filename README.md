@@ -3,7 +3,8 @@
 ![image](https://github.com/ricedust/p5-data-world/assets/62413269/b796e40f-2221-4418-9aa5-bacfc3f9b86f)
 
 Earth's topography mapped to dots in 3D space by superimposing images of land and sea elevation.
-[Generate it in your browser here](ricedust.com/p5-data-world).
+
+### [Generate it in your browser here](ricedust.com/p5-data-world)
 
 ## How It Works
 
