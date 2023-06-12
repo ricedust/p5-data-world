@@ -4,7 +4,7 @@
 
 Earth's topography mapped to dots in 3D space by superimposing images of land and sea elevation.
 
-### [Generate it in your browser here](ricedust.com/p5-data-world)
+### [Click here to generate it in your browser.](ricedust.com/p5-data-world)
 
 ## How It Works
 
